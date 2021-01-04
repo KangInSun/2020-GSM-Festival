@@ -31,7 +31,7 @@ class TestView(TestCase):
         soup = BeautifulSoup(response.content, 'html.parser')
         title = soup.title
 
-        self.assertEqual(title.text, '오늘 뭐 볼까? 자유게시판')
+        self.assertEqual(title.text, ' 오늘 뭐 볼까? 자유게시판')
 
         self.check_navbar(soup)
         # navbar = soup.find('div', id='navbar')
@@ -73,6 +73,6 @@ class TestView(TestCase):
         soup = BeautifulSoup(response.content, 'html.parser')
         title = soup.title
 
-        self.assertEqual(title.text, '{} - 오늘 뭐 볼까? 자유게시판'.format(post_000.title))
+        self.assertEqual(title.text, '{} -오늘 뭐 볼까? 자유게시판'.format(post_000.title))
 
         self.check_navbar(soup)
