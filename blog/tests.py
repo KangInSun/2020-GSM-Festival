@@ -119,6 +119,7 @@ class TestView(TestCase):
         self.assertIn('아직 게시물이 없습니다.', soup.body.text)
 
     def test_post_list_with_post(self):
+        tag_america = create_tag(name='america')
 
         post_000 = create_post(
             title='The first post',
@@ -126,12 +127,18 @@ class TestView(TestCase):
             author=self.author_000,
         )
 
+        post_000.tags.add(tag_america)
+        post_000.save()
+
         post_001 = create_post(
             title='The second post',
             content='Second Second Second',
             author=self.author_000,
             category=create_category(name='결과 공유')
         )
+
+        post_001.tags.add(tag_america)
+        post_001.save()
 
         self.assertGreater(Post.objects.count(), 0)
 
@@ -151,12 +158,20 @@ class TestView(TestCase):
         self.assertIn('결과 공유', main_div.text)  # '결과 공유' 있어야 함
         self.assertIn('미분류', main_div.text)  # '미분류' 있어야 함
 
+        #Tag
+        post_card_000 = main_div.find('div', id='post-card-{}'.format(post_000.pk))
+        self.assertIn('#america', post_card_000.text)  # Tag가 해당 post의 card마다 있다.
+
     def test_post_detail(self):
         post_000 = create_post(
             title='The first post',
             content='Hello World. We are the world.',
             author=self.author_000
         )
+
+        tag_america = create_tag(name='america')
+        post_000.tags.add(tag_america)
+        post_000.save()
 
         post_001 = create_post(
             title='The second post',
@@ -188,6 +203,9 @@ class TestView(TestCase):
         self.assertIn(post_000.content, main_div.text)
 
         self.check_right_side(soup)
+
+        # Tag
+        self.assertIn('#america', main_div.text)
 
     def test_post_list_by_category(self):
         category_results = create_category(name='결과 공유')
@@ -238,3 +256,5 @@ class TestView(TestCase):
         main_div = soup.find('div', id='main-div')
         self.assertIn('미분류', main_div.text)
         self.assertNotIn(category_results.name, main_div.text)
+
+
