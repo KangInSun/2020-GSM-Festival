@@ -10,6 +10,9 @@ def create_category(name='result', description=''):
         description=description
     )
 
+    category.slug = category.name.replace(' ', '-').replace('/', '')
+    category.save()
+
     return category
 
 def create_post(title, content, author, category=None):
@@ -57,7 +60,7 @@ class TestView(TestCase):
 
     def check_navbar(self, soup):
         navbar = soup.find('div', id='navbar')
-        self.assertIn('오늘 뭐 볼까? 자유게시판', navbar.text)
+        self.assertIn('Main', navbar.text)
         self.assertIn('About me', navbar.text)
 
     def check_right_side(self, soup):
@@ -105,11 +108,10 @@ class TestView(TestCase):
 
         post_000_read_more_btn = body.find('a', id='read-more-post-{}'.format(post_000.pk))
         self.assertEqual(post_000_read_more_btn['href'], post_000.get_absolute_url())
-
         self.check_right_side(soup)
 
         # main_div에는
-        main_div = soup.find('div', id='main_div')
+        main_div = soup.find('div', id='main-div')
         self.assertIn('결과 공유', main_div.text)  # '결과 공유' 있어야 함
         self.assertIn('미분류', main_div.text)  # '미분류' 있어야 함
 
@@ -141,13 +143,62 @@ class TestView(TestCase):
 
         self.check_navbar(soup)
 
-
         body = soup.body
 
-        main_div = body.find('div', id='main_div')
+        main_div = body.find('div', id='main-div')
         self.assertIn(post_000.title, main_div.text)
         self.assertIn(post_000.author.username, main_div.text)
 
         self.assertIn(post_000.content, main_div.text)
 
         self.check_right_side(soup)
+
+    def test_post_list_by_category(self):
+        category_results = create_category(name='결과 공유')
+
+        post_000 = create_post(
+            title='The first post',
+            content='Hello World. We are the world.',
+            author=self.author_000,
+        )
+
+        post_001 = create_post(
+            title='The second post',
+            content='Second Second Second',
+            author=self.author_000,
+            category=category_results
+        )
+
+        response = self.client.get(category_results.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        main_div = soup.find('div', id='main-div')
+        self.assertNotIn('미분류', main_div.text)
+        self.assertIn(category_results.name, main_div.text)
+
+    def test_post_list_no_category(self):
+        category_results = create_category(name='결과 공유')
+
+        post_000 = create_post(
+            title='The first post',
+            content='Hello World. We are the world.',
+            author=self.author_000,
+        )
+
+        post_001 = create_post(
+            title='The second post',
+            content='Second Second Second',
+            author=self.author_000,
+            category=category_results
+        )
+
+        response = self.client.get('/blog/category/_none/')
+        self.assertEqual(response.status_code, 200)
+
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        main_div = soup.find('div', id='main-div')
+        self.assertIn('미분류', main_div.text)
+        self.assertNotIn(category_results.name, main_div.text)
