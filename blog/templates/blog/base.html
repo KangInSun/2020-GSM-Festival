@@ -122,29 +122,17 @@
                 <div class="row">
                     <div class="col-lg-6">
                         <ul class="list-unstyled mb-0">
-                            <li>
-                                <a href="#">미분류 ({{ posts_without_category }})</a>
-                            </li>
+
                             {% for category in category_list %}
                             <li>
                                 <a href="#">{{ category.name }} ({{ category.post_set.count }})</a>
                             </li>
                             {% endfor %}
                             <li>
-                                <a href="#">Freebies</a>
+                                <a href="#">문의/건의</a>
                             </li>
-                        </ul>
-                    </div>
-                    <div class="col-lg-6">
-                        <ul class="list-unstyled mb-0">
-                            <li>
-                                <a href="#">JavaScript</a>
-                            </li>
-                            <li>
-                                <a href="#">CSS</a>
-                            </li>
-                            <li>
-                                <a href="#">Tutorials</a>
+                             <li>
+                                <a href="#">미분류 ({{ posts_without_category }})</a>
                             </li>
                         </ul>
                     </div>
