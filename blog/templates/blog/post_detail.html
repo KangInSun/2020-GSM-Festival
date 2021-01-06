@@ -7,7 +7,6 @@
 {% block content %}
 <!-- Title -->
 <h1>{{ object.title }}</h1>
-
 {% if object.category %}
 <span class="badge rounded-pill bg-warning text-dark float-right">{{ object.category }}</span>
 {% else %}
@@ -19,16 +18,13 @@
     by
     <a href="#">{{ object.author.username }}</a>
 </p>
-
 {% if request.user == object.author %}
     <button type="button" class="btn btn-sm btn-outline-danger float-right" onclick="location.href='{{ object.get_update_url }}'">EDIT</button>
 {% endif %}
-
 <hr>
 
 <!-- Date/Time -->
 <p>Posted on {{ object.created }}</p>
-
 <hr>
 
 <!-- Preview Image -->
@@ -38,14 +34,11 @@
 
 <!-- Post Content -->
 {{ object.get_markdown_content | safe }}
-
 <br/>
 <br/>
-
 {% for tag in object.tags.all %}
     <a href="{{ tag.get_absolute_url }}">#{{ tag }}</a>
 {% endfor %}
-
 <hr>
 
 <!-- Comments Form -->
@@ -67,10 +60,10 @@
     <div class="media mb-4" id="comment-id-{{ comment.pk }}">
         <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
         <div class="media-body">
-            {% if comment.author == request.user %}
+             {% if comment.author == request.user %}
                 <button class="btn btn-sm btn-outline-danger float-right">delete</button>
                 <button class="btn btn-sm btn-outline-success float-right">edit</button>
-            {% endif %}
+             {% endif %}
              <h5 class="mt-0">{{ comment.author }} <small class="text-muted">{{ comment.created_at }}</small> </h5>
              {{ comment.get_markdown_content | safe }}
         </div>
@@ -84,7 +77,6 @@
     <div class="media-body">
         <h5 class="mt-0">Commenter Name</h5>
         Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-
         <div class="media mt-4">
             <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
             <div class="media-body">
@@ -92,7 +84,6 @@
                 Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
             </div>
         </div>
-
         <div class="media mt-4">
             <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
             <div class="media-body">
@@ -100,8 +91,6 @@
                 Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
             </div>
         </div>
-
     </div>
 </div>
-
 {% endblock %}
